@@ -101,7 +101,7 @@ def check_latitude(restaurant, returned_address):
     returned_latitude = round(returned_address['lat'], 2)
     given_latitude = round(float(restaurant.latitude), 2)
     if given_latitude != returned_latitude:
-        restaurant.problem = 'latitude doesn\'t match: {} | {}'.format(given_latitude, returned_latitude)
+        restaurant.problem = u'latitude doesn\'t match: {} | {}'.format(given_latitude, returned_latitude)
         dirty_restaurants.append(restaurant)
         return
 
@@ -115,7 +115,7 @@ def check_longitude(restaurant, returned_address):
     returned_longitude = round(returned_address['long'], 2)
     given_longitude = round(float(restaurant.longitude), 2)
     if given_longitude != returned_longitude:
-        restaurant.problem = 'longitude doesn\'t match: {} | {}'.format(given_longitude, returned_longitude)
+        restaurant.problem = u'longitude doesn\'t match: {} | {}'.format(given_longitude, returned_longitude)
         dirty_restaurants.append(restaurant)
         return
 
@@ -151,7 +151,7 @@ def check_state(restaurant, returned_address):
     returned_state = returned_address['state'].lower()
     given_state = restaurant.address['State'].lower()
     if returned_state != given_state:
-        restaurant.problem = 'state doesn\'t match: {} | {}'.format(given_state, returned_state)
+        restaurant.problem = u'state doesn\'t match: {} | {}'.format(given_state, returned_state)
         dirty_restaurants.append(restaurant)
 
 
@@ -198,7 +198,10 @@ def main():
         csv_writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         csv_writer.writerow(['RID'] + ['PROBLEM (given value | received value)'])
         for restaurant in dirty_restaurants:
-            csv_writer.writerow([restaurant.rid] + [restaurant.problem])
+            try:
+                csv_writer.writerow([restaurant.rid] + [restaurant.problem.encode('UTF-8')])
+            except:
+                csv_writer.writerow([restaurant.rid] + ['restaurant data has unsupported encoding'])
 
 
 if __name__ == '__main__':
